@@ -39,7 +39,7 @@ def process_users(env):
     :param env: an instance of :class: ~simpy.core.Environment, which controls the simulation.
     :return: Nothing
     '''
-    file = './sense/enron_emails/data/in/enron_user_signupsB.json'
+    file = './sense/enron_emails/data/in/enron_user_signups.json'
     with open(file, 'r') as f:
         user_signups = json.load(f, )
         f.close()

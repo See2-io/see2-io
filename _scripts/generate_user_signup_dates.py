@@ -50,14 +50,14 @@ def generate_user_signup_data():
     #                 user_signups.append(user_signup)
     #                 break
     # user_signups_json = json.dumps(user_signups, indent=4)
-    # file_path = '../sense/enron_emails/data/in/enron_user_signupsA.json'
+    # file_path = '../sense/enron_emails/data/in/enron_user_signups.json'
     # with open(file_path, 'w') as f:
     #     f.write(user_signups_json)
     #     f.close()
 
-    data = pd.read_json('../sense/enron_emails/data/in/enron_user_signupsA.json')
+    data = pd.read_json('../sense/enron_emails/data/in/enron_user_signups.json')
     data.sort_values(by=['time'], inplace=True)
-    data.to_json(path_or_buf='../sense/enron_emails/data/in/enron_user_signupsB.json', orient='records')
+    data.to_json(path_or_buf='../sense/enron_emails/data/in/enron_user_signups.json', orient='records')
 
 
 def main():
