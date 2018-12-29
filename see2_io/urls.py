@@ -18,6 +18,5 @@ from django.urls import include, path
 
 urlpatterns = [
     path('communities/', include('communities.urls')),
-    path('emails/', include('emails.urls')),
     path('admin/', admin.site.urls),
 ]
