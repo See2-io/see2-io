@@ -3,9 +3,7 @@ from django.core.management.base import BaseCommand, CommandError
 
 # Add third party imports here
 import simpy
-# import json
-# import pandas as pd
-# import numpy as np
+import time
 
 # Add local imports here
 from sense._exceptions import NotFound
@@ -29,7 +27,11 @@ class Command(BaseCommand):
                 p1 = simpy.events.Process(env, users_gen)
                 emails_gen = send_emails(env)
                 p2 = simpy.events.Process(env, emails_gen)
-                env.run()
+                # env.run()
+                for i in range(99, 251299, 100):
+                    env.run(until=i)
+                    print('Sleeping Enron simulation.')
+                    time.sleep(0.1)
             except NotFound:
                 raise CommandError('Sim "%s" not found' % sim_file)
 

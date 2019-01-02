@@ -1,6 +1,7 @@
 # Add Django imports here
 from django.core.management.base import BaseCommand, CommandError
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User
 
 # Add third party imports here
 
@@ -27,7 +28,7 @@ class Command(BaseCommand):
         :return:
         '''
         try:
-            # Retrieve the 'Enron Supper Community' object.
+            # Retrieve the 'Enron Corporation' object.
             community = Community.objects.get(name='Enron Corporation',)
             # Delete all the members
             community.members.all().delete()
@@ -36,6 +37,9 @@ class Command(BaseCommand):
                 sub_community.members.all().delete()
                 sub_community.delete()
             community.delete()
+            # Delete See2 users associated with Enron Corporation
+            User.objects.all().delete()
+            # User.objects.all().filter(user_profile.org='Enron Corporation').delete()
         except ObjectDoesNotExist:
             print("The 'Enron Corporation' Community doesn't exist!")
         except Exception as err:

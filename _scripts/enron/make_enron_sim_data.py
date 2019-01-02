@@ -80,7 +80,7 @@ def make_enron_sim_data():
     communities['Traders'] = {'Name': 'Traders', 'Members': []}
     communities['Compliance'] = {'Name': 'Compliance', 'Members': [],}
     communities['Analysts'] = {'Name': 'Analysts', 'Members': [],}
-    communities['Managers'] = {'Name': 'Mnagers', 'Members': [],}
+    communities['Managers'] = {'Name': 'Managers', 'Members': [],}
     communities['Directors'] = {'Name': 'Directors', 'Members': [],}
     communities['CEOs'] = {'Name': 'CEOs', 'Members': []}
 

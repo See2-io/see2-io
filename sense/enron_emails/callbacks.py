@@ -58,7 +58,8 @@ def user_signup(event):
                                                community=c,
                                                date_joined=datetime.datetime.now(),
                                                joining_reason='See2 rocks!',)
-
+        user.user_profile.save()
+        user.save()
         print('User %s signed up at time %d after event ' % (event.value, event.env.now), event)
     except KeyError as e:
         print('User %s not found in data' % event.value)
