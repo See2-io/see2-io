@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'aia.apps.AiaConfig',
     'users.apps.UsersConfig',
     'sense.apps.SenseConfig',
     'communities.apps.CommunitiesConfig',
