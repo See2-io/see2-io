@@ -5,7 +5,7 @@ import numpy as np
 from simpy.events import Event, NORMAL, Timeout
 
 # Add local imports here
-from sense.enron_emails.callbacks import register_user, process_email, user_signup
+from sense.enron_emails.callbacks import process_email, user_signup
 
 
 class EmailEvent(Event):

@@ -3,12 +3,9 @@ from django.core.management.base import BaseCommand, CommandError
 
 # Add third party imports here
 import simpy
-import json
-import pandas as pd
-import numpy as np
+import time
 
 # Add local imports here
-from communities.models import Community
 from sense._exceptions import NotFound
 from sense.enron_emails.events import send_emails, process_users
 # from sense.enron_emails.events import send_emails_by_freq
@@ -23,7 +20,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for sim_file in options['sim_file']:
             try:
-                self.initialise()
                 env = simpy.Environment()
                 # email_by_freq_gen = send_emails_by_freq(env, 'W')
                 # process = simpy.events.Process(env, email_by_freq_gen)
@@ -31,18 +27,15 @@ class Command(BaseCommand):
                 p1 = simpy.events.Process(env, users_gen)
                 emails_gen = send_emails(env)
                 p2 = simpy.events.Process(env, emails_gen)
-                env.run()
+                # env.run()
+                for i in range(99, 251299, 100):
+                    env.run(until=i)
+                    print('Sleeping Enron simulation.')
+                    time.sleep(0.1)
             except NotFound:
                 raise CommandError('Sim "%s" not found' % sim_file)
 
             self.stdout.write(self.style.SUCCESS('Successfully found "%s"' % sim_file))
-
-    def initialise(self):
-        '''
-        Initialise some of the key simulation objects, including :class: ~communities.models.Community enronCommunity
-        :return:
-        '''
-        Community.objects.create(name='Enron members')
 
     def config_env(self,env):
         '''

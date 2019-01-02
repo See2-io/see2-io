@@ -1,11 +1,11 @@
 # Django modules
-from django.contrib.auth.models import User, UserManager
+# from django.contrib.auth.models import User, UserManager
 
 # Third party modules
 
 
 # Local modules
-from communities.models import Community, Member
+# from communities.models import Community, Member
 
 
 def add_member(user, community):
@@ -15,4 +15,4 @@ def add_member(user, community):
     :param community: a :class: ~communities.models.Community object.
     :return:
     '''
-    community.members
+    pass

@@ -9,10 +9,10 @@ def enrich_user_data():
     '''
     print(os.getcwd())
 
-    with open('../data/in/enron-distinct-users.json') as f:
+    with open('../../data/in/enron-distinct-users.json') as f:
         user_emails = json.load(f)
         f.close()
-    with open('../data/in/edo_enron-custodians-data.json') as f:
+    with open('../../data/in/edo_enron-custodians-data.json') as f:
         user_data = json.load(f)
         f.close()
     count = 0
