@@ -1,3 +1,5 @@
+import os
+from sense.settings import ENRON_DATA_COLLECTION, ENRON_DATA_SIM
 import pandas as pd
 import numpy as np
 import json
@@ -8,11 +10,13 @@ def generate_user_signup_data():
     Make See2 signup times based simply on when the email address is first seen in the Enron emails.
     :return: Nothing
     '''
-    with open('../../sense/enron_emails/data/in/edo_enron-custodians-data.json') as f:
+    fp = os.path.join(ENRON_DATA_COLLECTION, 'edo_enron-custodians-data.json')
+    with open(fp) as f:
         user_data = json.load(f)
         f.close()
 
-    enron_emails = pd.read_csv('../../sense/enron_emails/data/in/enron-emails.csv',
+    fp = os.path.join(ENRON_DATA_COLLECTION, 'enron-emails.csv')
+    enron_emails = pd.read_csv(fp,
                                # header=0,
                                # names=['id', ''cc', 'datetime', 'bcc', 'sender', 'recipients', 'subject', 'body',],
                                dtype={'id': np.int, 'cc': np.str, 'datetime': np.str, 'bcc': np.str, 'sender': np.str,
@@ -49,14 +53,15 @@ def generate_user_signup_data():
                     user_signups.append(user_signup)
                     break
     user_signups_json = json.dumps(user_signups, indent=4)
-    file_path = '../sense/enron_emails/data/in/enron_user_signups.json'
-    with open(file_path, 'w') as f:
+    fp = os.path.join(ENRON_DATA_SIM, 'enron_user_signups.json')
+    with open(fp, 'w') as f:
         f.write(user_signups_json)
         f.close()
 
-    data = pd.read_json('../../sense/enron_emails/data/in/enron_user_signups.json')
+    fp = os.path.join(ENRON_DATA_SIM, 'enron_user_signups.json')
+    data = pd.read_json(fp)
     data.sort_values(by=['time'], inplace=True)
-    data.to_json(path_or_buf='../../sense/enron_emails/data/in/enron_user_signups.json', orient='records')
+    data.to_json(path_or_buf=fp, orient='records')
 
 
 def make_enron_sim_data():
@@ -64,11 +69,11 @@ def make_enron_sim_data():
     Script to generate a simulation file from the Enron data.
     :return: Nothing
     '''
-    fp = '../../sense/enron_emails/data/in/enron_user_signups.json'
+    fp = os.path.join(ENRON_DATA_SIM, 'enron_user_signups.json')
     with open(fp) as f:
         enron_signups = json.load(f)
         f.close()
-    fp = '../../sense/enron_emails/data/in/edo_enron-custodians-data.json'
+    fp = os.path.join(ENRON_DATA_COLLECTION, 'edo_enron-custodians-data.json')
     with open(fp) as f:
         enron_people = json.load(f)
         f.close()
@@ -118,12 +123,12 @@ def make_enron_sim_data():
     enron_sim_data['Employees'] = people
     enron_sim_data['Communities'] = communities
 
-    fp = '../../sense/enron_emails/data/in/enron_sim_data.json'
+    fp = os.path.join(ENRON_DATA_SIM, 'enron_sim_data.json')
     with open(fp, 'w') as f:
         json.dump(enron_sim_data, f, indent=4)
         f.close()
 
-    fp = '../../sense/enron_emails/data/in/enron_user_signups.json'
+    fp = os.path.join(ENRON_DATA_SIM, 'enron_user_signups.json')
     with open(fp, 'w') as f:
         json.dump(enron_signups, f, indent=4)
         f.close()
@@ -140,3 +145,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

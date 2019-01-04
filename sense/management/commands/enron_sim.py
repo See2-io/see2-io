@@ -1,11 +1,11 @@
-# Add Django imports here
+# Django modules
 from django.core.management.base import BaseCommand, CommandError
 
-# Add third party imports here
+# Third party modules.
 import simpy
 import time
 
-# Add local imports here
+# See2-io modules.
 from sense._exceptions import NotFound
 from sense.enron_emails.events import send_emails, process_users
 # from sense.enron_emails.events import send_emails_by_freq

@@ -1,3 +1,4 @@
+from sense.settings import ENRON_DATA_COLLECTION
 import os
 import json
 
@@ -7,12 +8,12 @@ def enrich_user_data():
 
     :return:
     '''
-    print(os.getcwd())
-
-    with open('../../data/in/enron-distinct-users.json') as f:
+    fp = os.path.join(ENRON_DATA_COLLECTION, 'enron-distinct-users.json')
+    with open(fp) as f:
         user_emails = json.load(f)
         f.close()
-    with open('../../data/in/edo_enron-custodians-data.json') as f:
+    fp = os.path.join(ENRON_DATA_COLLECTION, 'edo_enron-custodians-data.json')
+    with open(fp) as f:
         user_data = json.load(f)
         f.close()
     count = 0

@@ -1,11 +1,12 @@
-# Add Django imports here
+# Django modules.
 from django.core.management.base import BaseCommand, CommandError
 
-# Add third party imports here
+# Third party modules.
 import json
 
-# Add local imports here
-from communities.models import Community, Member, AMembership, ACommunitySuperSub
+# See2-io modules.
+from core.models import Person
+from communities.models import Community, AMembership, ACommunitySuperSub
 
 
 class Command(BaseCommand):
@@ -17,23 +18,23 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         try:
-            c, created = Community.objects.get_or_create(name='Enron Corporation', super_community=True,)
+            community, created = Community.objects.get_or_create(name='Enron Corporation', super_community=True,)
             if created:
                 # Add all the members, i.e. the list of email addresses extracted from the Enron emails data set.
-                fp = './sense/enron_emails/data/in/enron-distinct-users.json'
+                fp = './sense/enron_emails/data/collection/enron-distinct-users.json'
                 with open(fp, 'r') as f:
                     items = json.load(f)
                     f.close()
                 for item in items:
-                    m = Member.objects.create(email=item)
-                    membership = AMembership(member=m, community=c, joining_reason='Stuff')
+                    member = Person.objects.create(email=item)
+                    membership = AMembership(member=member, community=community, joining_reason='You know.')
                     membership.save()
                     print('Added member: %s to community %s.' % (membership.member.email, membership.community.name))
                 items = []
 
                 # Add the sub-communities based on known job titles
                 # Note: members are only added during the simulation, when scheduled.
-                fp = './sense/enron_emails/data/in/enron_sim_data.json'
+                fp = './sense/enron_emails/data/sim/enron_sim_data.json'
                 with open(fp, 'r') as f:
                     items = json.load(f)
                     f.close()
