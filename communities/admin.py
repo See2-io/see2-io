@@ -1,7 +1,7 @@
+# Django modules
 from django.contrib import admin
 
-# Register your models here.
-from .models import Community, Member
+# See2-io modules
+from .models import Community
 
 admin.site.register(Community)
-admin.site.register(Member)

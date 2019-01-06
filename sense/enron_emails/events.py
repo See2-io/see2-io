@@ -45,7 +45,7 @@ def process_users(env):
     :return: Nothing
     '''
     fp = os.path.join(ENRON_DATA_SIM, 'enron_user_signups.json')
-    with open(file, 'r') as f:
+    with open(fp, 'r') as f:
         user_signups = json.load(f, )
         f.close()
     for user in user_signups:

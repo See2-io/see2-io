@@ -8,6 +8,9 @@ import datetime
 
 # See2-io modules.
 from sense.settings import ENRON_DATA_COLLECTION, ENRON_DATA_SIM
+from sense.enron_emails.data_filters import EmailAddressFilter
+from sense.enron_emails.utils import FilteredDataSetsCache
+from sense.models import ADataFilter
 from core.models import Person
 from communities.models import Community, AMembership
 
@@ -20,6 +23,7 @@ fp = os.path.join(ENRON_DATA_SIM, 'enron_sim_data.json')
 with open(fp) as f:
     sim_data = json.load(f)
     f.close()
+data_filters = FilteredDataSetsCache(name='Enron Corporation Emails')
 
 
 def process_email(event):
@@ -29,7 +33,11 @@ def process_email(event):
     :return: Nothing
     '''
     email = event.value
-    # print(email)
+    for data_filter in data_filters.get_data_filters():
+        filter = data_filter.filter
+        if email.sender[1:-1] in filter:
+            print(email.sender)
+            data_filters.add_data(name=data_filter.name, data=email,)
 
 
 def user_signup(event):
