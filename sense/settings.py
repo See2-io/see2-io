@@ -14,3 +14,8 @@ from see2_io.settings import BASE_DIR
 ENRON_DATA_ROOT = os.path.join(BASE_DIR, 'sense/enron_emails/data/')
 ENRON_DATA_COLLECTION = os.path.join(ENRON_DATA_ROOT, 'collection/')
 ENRON_DATA_SIM = os.path.join(ENRON_DATA_ROOT, 'sim/')
+
+# Enron Email Simulation config
+ENRON_SIM_START = 0
+ENRON_SIM_STOP = 251299
+ENRON_SIM_PERIOD = 500

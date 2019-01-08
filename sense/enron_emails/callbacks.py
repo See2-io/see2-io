@@ -7,7 +7,7 @@ import json
 import datetime
 
 # See2-io modules.
-from sense.settings import ENRON_DATA_COLLECTION, ENRON_DATA_SIM
+from sense.settings import ENRON_DATA_COLLECTION, ENRON_DATA_SIM, ENRON_SIM_PERIOD
 from sense.enron_emails.data_filters import EmailAddressFilter
 from sense.enron_emails.utils import FilteredDataSetsCache
 from sense.models import ADataFilter
@@ -38,6 +38,9 @@ def process_email(event):
         if email.sender[1:-1] in filter:
             print(email.sender)
             data_filters.add_data(name=data_filter.name, data=email,)
+    # Write the cached datasets to file every ENRON_SIM_PERIOD
+    if event.env.now % ENRON_SIM_PERIOD == 0:
+        data_filters.write_to_file(event.env.now)
 
 
 def user_signup(event):

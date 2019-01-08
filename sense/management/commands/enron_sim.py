@@ -7,6 +7,7 @@ import time
 
 # See2-io modules.
 from sense._exceptions import NotFound
+from sense.settings import ENRON_SIM_START, ENRON_SIM_STOP, ENRON_SIM_PERIOD
 from sense.enron_emails.events import send_emails, process_users
 # from sense.enron_emails.events import send_emails_by_freq
 
@@ -28,7 +29,7 @@ class Command(BaseCommand):
                 emails_gen = send_emails(env)
                 p2 = simpy.events.Process(env, emails_gen)
                 # env.run()
-                for i in range(99, 251299, 100):
+                for i in range(ENRON_SIM_START + ENRON_SIM_PERIOD, ENRON_SIM_STOP, ENRON_SIM_PERIOD):
                     env.run(until=i)
                     print('Sleeping Enron simulation.')
                     time.sleep(0.1)

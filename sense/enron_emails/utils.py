@@ -1,9 +1,13 @@
 # Django modules.
 
 # Third party modules.
+import json
+import os
+
 
 # See2-io modules.
 from sense.models import ADataFilter
+from sense.settings import ENRON_SIM_PERIOD, ENRON_DATA_SIM
 
 
 class FilteredDataSetsCache:
@@ -15,7 +19,8 @@ class FilteredDataSetsCache:
         self.data_filters = ADataFilter.objects.filter(dataset__name=name)
         for data_filter in self.data_filters:
             self.filtered_dataset_caches[data_filter.name] = {
-                'Data': [],
+                'Name': data_filter.name,
+                'Cache': [],
                 # 'Filter': data_filter.filter,
                 # 'Filtered_Dataset': data_filter.filtered_dataset,
                 # 'DataSet': data_filter.dataset,
@@ -37,7 +42,17 @@ class FilteredDataSetsCache:
         :return:
         '''
         if name in self.filtered_dataset_caches.keys():
-            self.filtered_dataset_caches[name]['Data'].append(data)
+            item = {
+                'id': data.id,
+                'cc': data.cc,
+                'datetime': data.datetime.strftime('%y-%m-%d %H:%M:%S'),
+                'bcc': data.bcc,
+                'sender': data.sender,
+                'recipients': data.recipients,
+                'subject': data.subject,
+                'body': data.body,
+            }
+            self.filtered_dataset_caches[name]['Cache'].append(item)
 
     def get_filtered_data_cache(self, name):
         '''
@@ -48,3 +63,17 @@ class FilteredDataSetsCache:
             return self.filtered_dataset_caches[name]
         else:
             return None
+
+    def write_to_file(self, sim_time):
+        '''
+
+        :return: Nothing
+        '''
+        json_data = {
+            'ENRON_SIM_PERIOD': sim_time - ENRON_SIM_PERIOD,
+            'Caches': self.filtered_dataset_caches,
+        }
+        fp = os.path.join(ENRON_DATA_SIM, 'enron_filtered_datasets.json')
+        with open(fp, 'a') as f:
+            json.dump(json_data, f, indent=4)
+            f.close()
