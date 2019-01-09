@@ -2,19 +2,28 @@
 from django.contrib.auth.models import User
 
 # Add third party imports here
+import os
 import json
 import datetime
 
-# Add local imports here
-from communities.models import Member, Community, AMembership
+# See2-io modules.
+from sense.settings import ENRON_DATA_COLLECTION, ENRON_DATA_SIM, ENRON_SIM_PERIOD
+from sense.enron_emails.data_filters import EmailAddressFilter
+from sense.enron_emails.utils import FilteredDataSetsCache
+from sense.models import ADataFilter
+from core.models import Person
+from communities.models import Community, AMembership
 
 # TODO: something better than these kludges to make the sim data avilable globally.
-with open('./sense/enron_emails/data/in/edo_enron-custodians-data.json') as f:
+fp = os.path.join(ENRON_DATA_COLLECTION, 'edo_enron-custodians-data.json')
+with open(fp) as f:
     user_data = json.load(f)
     f.close()
-with open('./sense/enron_emails/data/in/enron_sim_data.json') as f:
+fp = os.path.join(ENRON_DATA_SIM, 'enron_sim_data.json')
+with open(fp) as f:
     sim_data = json.load(f)
     f.close()
+data_filters = FilteredDataSetsCache(name='Enron Corporation Emails')
 
 
 def process_email(event):
@@ -24,7 +33,14 @@ def process_email(event):
     :return: Nothing
     '''
     email = event.value
-    # print(email)
+    for data_filter in data_filters.get_data_filters():
+        filter = data_filter.filter
+        if email.sender[1:-1] in filter:
+            print(email.sender)
+            data_filters.add_data(name=data_filter.name, data=email,)
+    # Write the cached datasets to file every ENRON_SIM_PERIOD
+    if event.env.now % ENRON_SIM_PERIOD == 0:
+        data_filters.write_to_file(event.env.now)
 
 
 def user_signup(event):
@@ -49,13 +65,13 @@ def user_signup(event):
         if 'Communities' in user_info:
             for community in user_info['Communities']:
                 if not community == 'Enron Corporation':
-                    m, created = Member.objects.get_or_create(first_name=user_info['givenName'],
+                    member, created = Person.objects.get_or_create(first_name=user_info['givenName'],
                                                               last_name=user_info['familyName'],
                                                               email=user_info['email'])
-                    user.user_profile.member = m
-                    c, created = Community.objects.get_or_create(name=community)
-                    AMembership.objects.create(member=m,
-                                               community=c,
+                    user.user_profile.member = member
+                    community, created = Community.objects.get_or_create(name=community)
+                    AMembership.objects.create(member=member,
+                                               community=community,
                                                date_joined=datetime.datetime.now(),
                                                joining_reason='See2 rocks!',)
         user.user_profile.save()

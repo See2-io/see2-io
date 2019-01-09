@@ -10,7 +10,7 @@ from communities.models import Community
 
 
 class Command(BaseCommand):
-    help = 'Runs the specified simulation.'
+    help = 'Removes Enron objects from the DB.'
 
     def add_arguments(self, parser):
         pass

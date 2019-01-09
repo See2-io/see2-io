@@ -1,10 +1,15 @@
-# Add third party imports here
+# Django modules
+
+
+# Third party modules
+import os
 import json
 import pandas as pd
 import numpy as np
 from simpy.events import Event, NORMAL, Timeout
 
-# Add local imports here
+# See2-io modules
+from sense.settings import ENRON_DATA_COLLECTION, ENRON_DATA_SIM
 from sense.enron_emails.callbacks import process_email, user_signup
 
 
@@ -39,8 +44,8 @@ def process_users(env):
     :param env: an instance of :class: ~simpy.core.Environment, which controls the simulation.
     :return: Nothing
     '''
-    file = './sense/enron_emails/data/in/enron_user_signups.json'
-    with open(file, 'r') as f:
+    fp = os.path.join(ENRON_DATA_SIM, 'enron_user_signups.json')
+    with open(fp, 'r') as f:
         user_signups = json.load(f, )
         f.close()
     for user in user_signups:
@@ -57,7 +62,8 @@ def send_emails(env):
     :param env: an instance of :class: ~simpy.core.Environment, which controls the simulation.
     :return: Nothing
     '''
-    enron_emails = pd.read_csv('./sense/enron_emails/data/in/enron-emails.csv',
+    fp = os.path.join(ENRON_DATA_COLLECTION, 'enron-emails.csv')
+    enron_emails = pd.read_csv(fp,
                                # header=0,
                                # names=['id', ''cc', 'datetime', 'bcc', 'sender', 'recipients', 'subject', 'body',],
                                dtype={'id': np.int, 'cc': np.str, 'datetime': np.str, 'bcc': np.str, 'sender': np.str,
@@ -83,7 +89,8 @@ def send_emails_by_freq(env, freq='D'):
     :param freq: used in :method: ~pandas.DataFrame.groupby() to group emails by the given frequency
     :return: Nothing
     '''
-    enron_emails = pd.read_csv('./sense/enron_emails/data/in/enron-emails.csv',
+    fp = os.path.join(ENRON_DATA_COLLECTION, 'enron-emails.csv')
+    enron_emails = pd.read_csv(fp,
                                # header=0,
                                # names=['id', ''cc', 'datetime', 'bcc', 'sender', 'recipients', 'subject', 'body',],
                                dtype={'id': np.int, 'cc': np.str, 'datetime': np.str, 'bcc': np.str, 'sender': np.str,
