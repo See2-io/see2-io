@@ -1,5 +1,4 @@
 # See2.io
-Building See2.io
 An early prototype for See2.io using the Enron Corporation emails.
 
 ## Requirements
