@@ -18,7 +18,15 @@ This will install all requirements into virtual environment, to use it you will 
 `source .venv/bin/activate`
 
 ## How to Use
-To make the Enron Corporation Super Community and its sub-communities, run:
+Create Django database (default SQLite)
+
+```
+python manage.py makemigrations
+python manage.py migrate
+```
+If there are no reported errors, this should create the "db.sqlite3" database file in the project root directory.
+
+Make the Enron Corporation Super Community and its sub-communities, run:
 
 `python manage.py make_enron_communities`
 
