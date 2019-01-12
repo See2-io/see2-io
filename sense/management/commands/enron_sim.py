@@ -31,12 +31,12 @@ class Command(BaseCommand):
                 # env.run()
                 for i in range(ENRON_SIM_START + ENRON_SIM_PERIOD, ENRON_SIM_STOP, ENRON_SIM_PERIOD):
                     env.run(until=i)
-                    print('Sleeping Enron simulation.')
+                    # print('Sleeping Enron simulation.')
                     time.sleep(0.1)
             except NotFound:
                 raise CommandError('Sim "%s" not found' % sim_file)
 
-            self.stdout.write(self.style.SUCCESS('Successfully found "%s"' % sim_file))
+            # self.stdout.write(self.style.SUCCESS('Successfully found "%s"' % sim_file))
 
     def config_env(self,env):
         '''

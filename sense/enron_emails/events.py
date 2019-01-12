@@ -28,7 +28,7 @@ class EmailEvent(Event):
         self.callbacks = []
         self._value = value
         self._ok = True
-        print('Event created at %d' % env.now)
+        # print('Event created at %d' % env.now)
         env.schedule(self, NORMAL, delay)
 
     def _desc(self):
@@ -49,7 +49,6 @@ def process_users(env):
         user_signups = json.load(f, )
         f.close()
     for user in user_signups:
-        # print(user)
         delay = user['time'] - env.now
         event = Timeout(env, delay=delay, value=user)
         event.callbacks.append(user_signup)
@@ -102,12 +101,11 @@ def send_emails_by_freq(env, freq='D'):
     enron_emails = enron_emails.set_index('datetime', drop=False)
     enron_emails = enron_emails.sort_values(by='datetime')
     enron_emails = enron_emails.loc['1998-11-01':'2002-07-31']
-    print('Grouping by frequency "%s" ...' % freq)
+    # print('Grouping by frequency "%s" ...' % freq)
     emails_by_freq = enron_emails.groupby(pd.Grouper(freq=freq))
-    print('Processing emails ...')
+    # print('Processing emails ...')
 
     for name, group in emails_by_freq:
-        print(name)
         event = EmailEvent(env, delay=1, value=group)
         event.callbacks.append(process_email)
         val = yield event
