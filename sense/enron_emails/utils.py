@@ -53,6 +53,8 @@ class FilteredDataSetsCache:
                 'body': data.body,
             }
             self.filtered_dataset_caches[name]['Cache'].append(item)
+            # Next line prints to stdout for piping in 'realtime' to gource visualisation.
+            print('%f|%s|M|Enron Corporation/%s' % (data.datetime.timestamp(), data.sender[1:-1], name))
 
     def get_filtered_data_cache(self, name):
         '''

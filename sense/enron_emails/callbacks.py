@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 import os
 import json
 import datetime
+import pytz
 
 # See2-io modules.
 from sense.settings import ENRON_DATA_COLLECTION, ENRON_DATA_SIM, ENRON_SIM_PERIOD
@@ -36,11 +37,11 @@ def process_email(event):
     for data_filter in data_filters.get_data_filters():
         filter = data_filter.filter
         if email.sender[1:-1] in filter:
-            print(email.sender)
+            # print(email.sender)
             data_filters.add_data(name=data_filter.name, data=email,)
     # Write the cached datasets to file every ENRON_SIM_PERIOD
-    if event.env.now % ENRON_SIM_PERIOD == 0:
-        data_filters.write_to_file(event.env.now)
+    # if event.env.now % ENRON_SIM_PERIOD == 0:
+    #     data_filters.write_to_file(event.env.now)
 
 
 def user_signup(event):
@@ -72,11 +73,12 @@ def user_signup(event):
                     community, created = Community.objects.get_or_create(name=community)
                     AMembership.objects.create(member=member,
                                                community=community,
-                                               date_joined=datetime.datetime.now(),
+                                               date_joined=datetime.datetime.now(pytz.utc),
                                                joining_reason='See2 rocks!',)
         user.user_profile.save()
         user.save()
-        print('User %s signed up at time %d after event ' % (event.value, event.env.now), event)
+        # print('User %s signed up at time %d after event ' % (event.value, event.env.now), event)
     except KeyError as e:
-        print('User %s not found in data' % event.value)
+        pass
+        # print('User %s not found in data' % event.value)
 
