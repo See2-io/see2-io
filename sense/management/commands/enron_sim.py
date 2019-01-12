@@ -36,7 +36,7 @@ class Command(BaseCommand):
             except NotFound:
                 raise CommandError('Sim "%s" not found' % sim_file)
 
-            self.stdout.write(self.style.SUCCESS('Successfully found "%s"' % sim_file))
+            # self.stdout.write(self.style.SUCCESS('Successfully found "%s"' % sim_file))
 
     def config_env(self,env):
         '''
