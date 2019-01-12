@@ -18,6 +18,10 @@ This will install all requirements into virtual environment, to use it you will 
 `source .venv/bin/activate`
 
 ## How to Use
+From within your python virtual environment, switch to the project root directory.
+
+`cd <PROJECT_ROOT>`
+
 Create Django database (default SQLite)
 
 ```
@@ -33,3 +37,15 @@ Make the Enron Corporation Super Community and its sub-communities, run:
 This sets up the database to run the Enron simulation, which generates "user sign-up" and email events:
 
 `python manage.py enron_sim`
+
+## Django Fixtures
+There are currently no Django fixtures in the project, but it makes sense to create one after running `make_enron_communities`    as this process takes a few minutes and requires a clean database to run.
+
+```
+python manage.py dumpdata > sense/fixtures/enron_communities.json
+```
+
+When needed, this dumpa can be reloaded with:
+
+```
+python manage.py loaddata < sense/fixtures/enron_communities.json
