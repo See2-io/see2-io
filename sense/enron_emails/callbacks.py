@@ -11,11 +11,12 @@ import pytz
 from sense.settings import ENRON_DATA_COLLECTION, ENRON_DATA_SIM, ENRON_SIM_PERIOD
 from sense.enron_emails.data_filters import EmailAddressFilter
 from sense.enron_emails.utils import FilteredDataSetsCache
+from sense.enron_emails.vectorizer import top_topics
 from sense.models import ADataFilter
 from core.models import Person
 from communities.models import Community, AMembership
 
-# TODO: something better than these kludges to make the sim data avilable globally.
+# TODO: something better than these kludges to make the sim data available globally.
 fp = os.path.join(ENRON_DATA_COLLECTION, 'edo_enron-custodians-data.json')
 with open(fp) as f:
     user_data = json.load(f)
@@ -33,15 +34,26 @@ def process_email(event):
     :param event:  :class: ~sense.enron_emails.events.EmailEvent associated with this callback.
     :return: Nothing
     '''
+    # The email from this event has been passed as the event.value
     email = event.value
+
+    # For each data filter, if the sender is registered, add this email to its cache
     for data_filter in data_filters.get_data_filters():
         filter = data_filter.filter
         if email.sender[1:-1] in filter:
             # print(email.sender)
             data_filters.add_data(name=data_filter.name, data=email,)
-    # Write the cached datasets to file every ENRON_SIM_PERIOD
-    # if event.env.now % ENRON_SIM_PERIOD == 0:
-    #     data_filters.write_to_file(event.env.now)
+
+    # Every ENRON_SIM_PERIOD, do something interesting with the cached datasets
+    if event.env.now % ENRON_SIM_PERIOD == 0:
+        # data_filters.process_caches(event.env.now)
+        for key in data_filters.get_cache_keys():
+            df = data_filters.get_filtered_data_cache(key)['Cache']
+            if not df.empty:
+                top_features = top_topics(df, 25)
+                print(top_features)
+                timestamp = email.datetime.timestamp()
+                data_filters.update_topics(timestamp=timestamp, name=key, new_topics=set(top_features),)
 
 
 def user_signup(event):

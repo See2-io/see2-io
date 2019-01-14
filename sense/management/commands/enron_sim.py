@@ -45,23 +45,3 @@ class Command(BaseCommand):
         :return:
         '''
         pass
-
-
-# class Server(object):
-#     '''
-#     This class represents the propagation of emails through a server
-#     '''
-#     def __init__(self, env, delay):
-#         self.env = env
-#         self.delay = delay
-#         self.store = simpy.Store(env)
-#
-#     def latency(self, value):
-#         yield self.env.timeout(self.delay)
-#         self.store.put(value)
-#
-#     def send(self, value):
-#         self.env.process(self.latency(value))
-#
-#     def fetch(self):
-#         return self.store.get()
