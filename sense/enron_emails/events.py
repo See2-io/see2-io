@@ -11,6 +11,7 @@ from simpy.events import Event, NORMAL, Timeout
 # See2-io modules
 from sense.settings import ENRON_DATA_COLLECTION, ENRON_DATA_SIM
 from sense.enron_emails.callbacks import process_email, user_signup
+from sense.enron_emails.utils import clean_emails
 
 
 class EmailEvent(Event):
@@ -74,6 +75,9 @@ def send_emails(env):
     enron_emails = enron_emails.set_index('datetime', drop=False)
     enron_emails = enron_emails.sort_values(by='datetime')
     enron_emails = enron_emails.loc['1998-11-01':'2002-07-31']
+    # Drop rows with NaN values
+    enron_emails = enron_emails.dropna()
+    enron_emails['clean_body'] = clean_emails(enron_emails['body'])
 
     for index, row in enron_emails.iterrows():
         event = EmailEvent(env, delay=1, value=row)
