@@ -72,10 +72,10 @@ class FilteredDataSetsCache:
             'body': data.body,
             'clean_body': data.clean_body,
         }
-        # Add the item (email) to the 'Enron God' set
-        df = self.filtered_dataset_caches['Enron God']['Cache']
+        # Add the item (email) to the 'Enron God data Filter' cache
+        df = self.filtered_dataset_caches['Enron God Data Filter']['Cache']
         df = df.append(item, ignore_index=True,)
-        self.filtered_dataset_caches['Enron God']['Cache'] = df
+        self.filtered_dataset_caches['Enron God Data Filter']['Cache'] = df
 
         # Add item to the named sub-community
         if name in self.filtered_dataset_caches.keys():
