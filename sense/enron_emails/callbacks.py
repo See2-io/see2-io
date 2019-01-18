@@ -50,7 +50,7 @@ def process_email(event):
         for key in data_filters.get_cache_keys():
             df = data_filters.get_filtered_data_cache(key)['Cache']
             if not df.empty:
-                top_features = top_topics(df, 25)
+                top_features = top_topics(df, 0.25, 0.02)
                 print(top_features)
                 timestamp = email.datetime.timestamp()
                 data_filters.update_topics(timestamp=timestamp, name=key, new_topics=set(top_features),)

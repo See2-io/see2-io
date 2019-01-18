@@ -3,7 +3,9 @@ import numpy as np
 import nltk
 from nltk import word_tokenize
 from nltk.stem import WordNetLemmatizer
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer, ENGLISH_STOP_WORDS
+from sklearn.pipeline import Pipeline
+from sklearn.feature_selection import SelectKBest, chi2
+from sklearn.feature_extraction.text import CountVectorizer, ENGLISH_STOP_WORDS
 
 
 class LemmaTokenizer(object):
@@ -26,29 +28,22 @@ def top_features_in_doc(X, features, row_id, top_n=25):
     return top_tfidf_features(row, features, top_n)
 
 
-def top_topics(df, n):
+def top_topics(df, tail=0.25, n=0.02):
     '''
-    :param docs: A :class: pandas.DataFrame containing text documents.
-    :param n: the number of top topics to return.
-    :return:
+    :param df: A :class: pandas.DataFrame containing text documents.
+    :param tail: the percentage of df to take as df.tail(), i.e. use 'tail' % of the most recent documents.
+    :param n: the percentage of top topics to return.
+    :return: top_topics
     '''
+    if 0.0 <= tail <= 1.0:
+        df_tail = df.tail(round(len(df) * tail))
+    else:
+        df_tail = df.tail(round(len(df) * 0.25))
     stopwords = ENGLISH_STOP_WORDS.union(['ect', 'hou', 'com', 'recipient'])
-    # tf_idf_vect = TfidfVectorizer(tokenizer=LemmaTokenizer(), lowercase=True, stop_words=stopwords, min_df=1)
-    # X = tf_idf_vect.fit_transform(df['clean_body'])
-    # tf_idf_features = tf_idf_vect.get_feature_names()
-    count_vect = CountVectorizer(stop_words=stopwords, lowercase=True, max_features=n)
-    # count_vect = CountVectorizer(tokenizer=LemmaTokenizer, lowercase=True, max_features=n)
-    X_count = count_vect.fit_transform(df['clean_body'])
-    count_features = count_vect.get_feature_names()
-
-    # i = 0
-    # # For each email, fetch the top features
-    # top_features = {}
-    # while i < X.shape[0]:
-    #     email = df.iloc[i]
-    #     t_feats = top_features_in_doc(X, tf_idf_features, i, n)
-    #     top_features[str(email['id'])] = dict(zip(t_feats.feature, t_feats.score))
-    #     i += 1
-
-    # top_features = count_features[:10]
-    return count_features
+    vec = CountVectorizer(stop_words=stopwords, lowercase=True,).fit(df['clean_body'])
+    bag_of_feats = vec.transform(df_tail['clean_body'])
+    sum_feats = bag_of_feats.sum(axis=0)
+    feats_freq = [(word, sum_feats[0, idx]) for word, idx in vec.vocabulary_.items()]
+    feats_freq = sorted(feats_freq, key=lambda x: x[1], reverse=True)
+    top_topics = feats_freq[:round(len(feats_freq) * n)]
+    return set(list(zip(*top_topics))[0])

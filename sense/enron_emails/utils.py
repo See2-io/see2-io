@@ -39,7 +39,7 @@ class FilteredDataSetsCache:
             self.filtered_dataset_caches[data_filter.name] = {
                 'Name': data_filter.name,
                 'Cache': pd.DataFrame(),
-                'Topics': [],
+                'Topics': set(),
                 # 'Filter': data_filter.filter,
                 # 'Filtered_Dataset': data_filter.filtered_dataset,
                 # 'DataSet': data_filter.dataset,
@@ -89,7 +89,7 @@ class FilteredDataSetsCache:
             # Touch any topics mentioned in this email
             topics = self.filtered_dataset_caches[name]['Topics']
             for topic in topics:
-                if topic in data.clean_body:
+                if topic[0] in data.clean_body:
                     self.gource.write('%d|%s|M|Enron Corporation/%s/%s\n' % (data.datetime.timestamp(), data.sender[1:-1], name[:-12], topic))
 
     def get_filtered_data_cache(self, name):
@@ -125,7 +125,9 @@ class FilteredDataSetsCache:
         :return:
         '''
         if name in self.filtered_dataset_caches.keys():
-            old_topics = set(self.filtered_dataset_caches[name]['Topics'])
+            # new_t = set(list(zip(*new_topics))[0])
+            # old_topics = set(list(zip(*self.filtered_dataset_caches[name]['Topics']))[0])
+            old_topics = self.filtered_dataset_caches[name]['Topics']
             for topic in old_topics.difference(new_topics):
                 self.gource.write('%d|Enron God|D|Enron Corporation/%s/%s\n' % (timestamp, name[:-12], topic))
             for topic in old_topics & new_topics:
