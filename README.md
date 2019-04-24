@@ -45,7 +45,7 @@ There are currently no Django fixtures in the project, but it makes sense to cre
 python manage.py dumpdata > sense/fixtures/enron_communities.json
 ```
 
-When needed, this dumpa can be reloaded with:
+When needed, this dump can be reloaded with:
 
 ```
 python manage.py loaddata < sense/fixtures/enron_communities.json
